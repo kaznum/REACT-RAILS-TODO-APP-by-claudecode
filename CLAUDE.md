@@ -6,6 +6,10 @@ CLAUDE CODEとのやり取りは基本的に日本語を使用します。
 
 Railsのアプリケーションプロジェクトで、TODOの追加、編集、削除、閲覧をするアプリです。
 
+## ドキュメント
+
+- [WEB API インターフェース仕様書](./webapi-interface.md) - REST APIの詳細仕様
+
 ## Development Commands
 
 コンテナの起動:
