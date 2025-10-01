@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import apiClient from '../api/client'
+import { removeToken } from '../utils/auth'
 import TodoItem from '../components/TodoItem'
 import TodoForm from '../components/TodoForm'
 import '../styles/Todos.scss'
-
-const API_URL = 'http://localhost:3000/api'
 
 function Todos() {
   const navigate = useNavigate()
@@ -16,7 +15,7 @@ function Todos() {
 
   const checkAuth = useCallback(async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/check`, { withCredentials: true })
+      const response = await apiClient.get('/auth/check')
       setUser(response.data.user)
     } catch (error) {
       navigate('/login')
@@ -25,7 +24,7 @@ function Todos() {
 
   const fetchTodos = useCallback(async () => {
     try {
-      const response = await axios.get(`${API_URL}/todos`, { withCredentials: true })
+      const response = await apiClient.get('/todos')
       setTodos(response.data)
       setLoading(false)
     } catch (error) {
@@ -41,7 +40,8 @@ function Todos() {
 
   const handleLogout = async () => {
     try {
-      await axios.delete(`${API_URL}/auth/logout`, { withCredentials: true })
+      await apiClient.delete('/auth/logout')
+      removeToken()
       navigate('/login')
     } catch (error) {
       console.error('ログアウトエラー:', error)
@@ -50,7 +50,7 @@ function Todos() {
 
   const handleAddTodo = async (todo) => {
     try {
-      await axios.post(`${API_URL}/todos`, { todo }, { withCredentials: true })
+      await apiClient.post('/todos', { todo })
       await fetchTodos()
     } catch (error) {
       console.error('TODO追加エラー:', error)
@@ -60,7 +60,7 @@ function Todos() {
 
   const handleUpdateTodo = async (id, updates) => {
     try {
-      await axios.put(`${API_URL}/todos/${id}`, { todo: updates }, { withCredentials: true })
+      await apiClient.put(`/todos/${id}`, { todo: updates })
       await fetchTodos()
       setEditingTodo(null)
     } catch (error) {
@@ -73,7 +73,7 @@ function Todos() {
     if (!window.confirm('このTODOを削除してもよろしいですか？')) return
 
     try {
-      await axios.delete(`${API_URL}/todos/${id}`, { withCredentials: true })
+      await apiClient.delete(`/todos/${id}`)
       setTodos(todos.filter(t => t.id !== id))
     } catch (error) {
       console.error('TODO削除エラー:', error)

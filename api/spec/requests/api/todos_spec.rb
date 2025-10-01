@@ -8,15 +8,11 @@ RSpec.describe 'Api::Todos', type: :request do
 
   describe 'GET /api/todos' do
     context '認証済みユーザーの場合' do
-      before do
-        allow_any_instance_of(Api::TodosController).to receive(:current_user).and_return(user)
-      end
-
       it 'ログインユーザーのTODOのみを返す' do
         create_list(:todo, 3, user: user)
         create(:todo, user: other_user)
 
-        get '/api/todos'
+        get '/api/todos', headers: auth_headers(user)
         expect(response).to have_http_status(:success)
         json = response.parsed_body
         expect(json.size).to eq(3)
@@ -28,11 +24,11 @@ RSpec.describe 'Api::Todos', type: :request do
         create(:todo, user: user, name: '期限早い', due_date: 1.day.from_now)
         create(:todo, user: user, name: '期限遅い', due_date: 3.days.from_now)
 
-        get '/api/todos'
+        get '/api/todos', headers: auth_headers(user)
         json = response.parsed_body
 
         # 期限なしが最初、その後期限の昇順
-        expect(json.pluck('name')).to eq(%w[期限なし 期限早い 期限遅い])
+        expect(json.map { |t| t['name'] }).to eq(%w[期限なし 期限早い 期限遅い])
       end
     end
 
@@ -46,26 +42,22 @@ RSpec.describe 'Api::Todos', type: :request do
 
   describe 'POST /api/todos' do
     context '認証済みユーザーの場合' do
-      before do
-        allow_any_instance_of(Api::TodosController).to receive(:current_user).and_return(user)
-      end
-
       context '有効なパラメータの場合' do
         let(:valid_params) { { todo: { name: 'New TODO', due_date: '2025-12-31', completed: false } } }
 
         it 'TODOを作成する' do
           expect do
-            post '/api/todos', params: valid_params
+            post '/api/todos', params: valid_params, headers: auth_headers(user)
           end.to change(user.todos, :count).by(1)
         end
 
         it '201ステータスを返す' do
-          post '/api/todos', params: valid_params
+          post '/api/todos', params: valid_params, headers: auth_headers(user)
           expect(response).to have_http_status(:created)
         end
 
         it '作成したTODOを返す' do
-          post '/api/todos', params: valid_params
+          post '/api/todos', params: valid_params, headers: auth_headers(user)
           json = response.parsed_body
           expect(json['name']).to eq('New TODO')
         end
@@ -76,17 +68,17 @@ RSpec.describe 'Api::Todos', type: :request do
 
         it 'TODOを作成しない' do
           expect do
-            post '/api/todos', params: invalid_params
+            post '/api/todos', params: invalid_params, headers: auth_headers(user)
           end.not_to change(Todo, :count)
         end
 
         it '422ステータスを返す' do
-          post '/api/todos', params: invalid_params
+          post '/api/todos', params: invalid_params, headers: auth_headers(user)
           expect(response).to have_http_status(:unprocessable_entity)
         end
 
         it 'エラーメッセージを返す' do
-          post '/api/todos', params: invalid_params
+          post '/api/todos', params: invalid_params, headers: auth_headers(user)
           json = response.parsed_body
           expect(json['errors']).to be_present
         end
@@ -105,19 +97,15 @@ RSpec.describe 'Api::Todos', type: :request do
     let!(:todo) { create(:todo, user: user, name: 'Original Name') }
 
     context '認証済みユーザーの場合' do
-      before do
-        allow_any_instance_of(Api::TodosController).to receive(:current_user).and_return(user)
-      end
-
       context '有効なパラメータの場合' do
         it 'TODOを更新する' do
-          put "/api/todos/#{todo.id}", params: { todo: { name: 'Updated Name' } }
+          put "/api/todos/#{todo.id}", params: { todo: { name: 'Updated Name' } }, headers: auth_headers(user)
           todo.reload
           expect(todo.name).to eq('Updated Name')
         end
 
         it '200ステータスを返す' do
-          put "/api/todos/#{todo.id}", params: { todo: { completed: true } }
+          put "/api/todos/#{todo.id}", params: { todo: { completed: true } }, headers: auth_headers(user)
           expect(response).to have_http_status(:success)
         end
       end
@@ -126,7 +114,7 @@ RSpec.describe 'Api::Todos', type: :request do
         let!(:other_todo) { create(:todo, user: other_user) }
 
         it '404エラーを返す' do
-          put "/api/todos/#{other_todo.id}", params: { todo: { name: 'Hacked' } }
+          put "/api/todos/#{other_todo.id}", params: { todo: { name: 'Hacked' } }, headers: auth_headers(user)
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -137,18 +125,14 @@ RSpec.describe 'Api::Todos', type: :request do
     let!(:todo) { create(:todo, user: user) }
 
     context '認証済みユーザーの場合' do
-      before do
-        allow_any_instance_of(Api::TodosController).to receive(:current_user).and_return(user)
-      end
-
       it 'TODOを削除する' do
         expect do
-          delete "/api/todos/#{todo.id}"
+          delete "/api/todos/#{todo.id}", headers: auth_headers(user)
         end.to change(user.todos, :count).by(-1)
       end
 
       it '204ステータスを返す' do
-        delete "/api/todos/#{todo.id}"
+        delete "/api/todos/#{todo.id}", headers: auth_headers(user)
         expect(response).to have_http_status(:no_content)
       end
     end

@@ -1,26 +1,27 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { isAuthenticated, setToken } from '../utils/auth'
 import '../styles/Login.scss'
 
 function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
-    // セッションチェック
-    const checkSession = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/auth/check', {
-          credentials: 'include'
-        })
-        if (response.ok) {
-          navigate('/todos')
-        }
-      } catch (error) {
-        console.error('セッションチェックエラー:', error)
-      }
+    // トークンチェック
+    if (isAuthenticated()) {
+      navigate('/todos')
+      return
     }
-    checkSession()
-  }, [navigate])
+
+    // OAuthコールバックからのトークン処理
+    const params = new URLSearchParams(location.search)
+    const token = params.get('token')
+    if (token) {
+      setToken(token)
+      navigate('/todos')
+    }
+  }, [navigate, location])
 
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:3000/auth/google_oauth2'
