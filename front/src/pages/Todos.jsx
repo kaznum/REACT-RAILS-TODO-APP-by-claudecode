@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import TodoItem from '../components/TodoItem'
@@ -14,21 +14,16 @@ function Todos() {
   const [loading, setLoading] = useState(true)
   const [editingTodo, setEditingTodo] = useState(null)
 
-  useEffect(() => {
-    checkAuth()
-    fetchTodos()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/auth/check`, { withCredentials: true })
       setUser(response.data.user)
     } catch (error) {
       navigate('/login')
     }
-  }
+  }, [navigate])
 
-  const fetchTodos = async () => {
+  const fetchTodos = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/todos`, { withCredentials: true })
       setTodos(response.data)
@@ -37,7 +32,12 @@ function Todos() {
       console.error('TODO取得エラー:', error)
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    checkAuth()
+    fetchTodos()
+  }, [checkAuth, fetchTodos])
 
   const handleLogout = async () => {
     try {
