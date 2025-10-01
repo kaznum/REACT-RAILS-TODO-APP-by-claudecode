@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
-Rails.application.config.middleware.insert_after ActionDispatch::Session::CookieStore, OmniAuth::Builder do
+# セッションストアの設定（OmniAuthのために最小限必要）
+Rails.application.config.middleware.use ActionDispatch::Cookies
+Rails.application.config.middleware.use ActionDispatch::Session::CookieStore, key: '_omniauth_session'
+
+# OmniAuthミドルウェアを/authパスのみに適用
+Rails.application.config.middleware.use OmniAuth::Builder do
   provider :google_oauth2, ENV.fetch('GOOGLE_CLIENT_ID', nil), ENV.fetch('GOOGLE_CLIENT_SECRET', nil),
            {
              scope: 'email,profile',

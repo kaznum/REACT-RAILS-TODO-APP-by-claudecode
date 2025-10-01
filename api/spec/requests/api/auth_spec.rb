@@ -7,18 +7,15 @@ RSpec.describe 'Api::Auth', type: :request do
 
   describe 'GET /api/auth/check' do
     context 'ログイン済みの場合' do
-      before do
-        allow_any_instance_of(Api::AuthController).to receive(:current_user).and_return(user)
-      end
-
       it '200ステータスを返す' do
-        get '/api/auth/check'
+        get '/api/auth/check', headers: auth_headers(user)
         expect(response).to have_http_status(:success)
       end
 
-      it 'ユーザー情報を返す' do
-        get '/api/auth/check'
+      it 'ユーザー情報とauthenticated: trueを返す' do
+        get '/api/auth/check', headers: auth_headers(user)
         json = response.parsed_body
+        expect(json['authenticated']).to be(true)
         expect(json['user']['id']).to eq(user.id)
         expect(json['user']['name']).to eq(user.name)
         expect(json['user']['email']).to eq(user.email)
@@ -31,29 +28,24 @@ RSpec.describe 'Api::Auth', type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
 
-      it 'エラーメッセージを返す' do
+      it 'authenticated: falseを返す' do
         get '/api/auth/check'
         json = response.parsed_body
-        expect(json['error']).to eq('Unauthorized')
+        expect(json['authenticated']).to be(false)
       end
     end
   end
 
   describe 'DELETE /api/auth/logout' do
-    before do
-      allow_any_instance_of(Api::AuthController).to receive(:session).and_return({ user_id: user.id })
+    it '成功メッセージを返す' do
+      delete '/api/auth/logout'
+      json = response.parsed_body
+      expect(json['message']).to eq('ログアウトしました')
     end
 
-    it 'セッションをクリアする' do
-      session = {}
-      allow_any_instance_of(Api::AuthController).to receive(:session).and_return(session)
+    it '200ステータスを返す' do
       delete '/api/auth/logout'
-      expect(session[:user_id]).to be_nil
-    end
-
-    it '204ステータスを返す' do
-      delete '/api/auth/logout'
-      expect(response).to have_http_status(:no_content)
+      expect(response).to have_http_status(:success)
     end
   end
 end

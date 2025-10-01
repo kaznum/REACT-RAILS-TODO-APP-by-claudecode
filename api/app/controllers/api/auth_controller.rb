@@ -4,15 +4,18 @@ module Api
   class AuthController < ApplicationController
     def check
       if current_user
-        render json: { user: { id: current_user.id, name: current_user.name, email: current_user.email } }
+        render json: {
+          authenticated: true,
+          user: { id: current_user.id, name: current_user.name, email: current_user.email }
+        }
       else
-        render json: { error: 'Unauthorized' }, status: :unauthorized
+        render json: { authenticated: false }, status: :unauthorized
       end
     end
 
     def logout
-      session[:user_id] = nil
-      head :no_content
+      # JWT is stateless, so logout is handled client-side by removing the token
+      render json: { message: 'ログアウトしました' }
     end
   end
 end

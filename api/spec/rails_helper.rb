@@ -68,6 +68,14 @@ RSpec.configure do |config|
 
   # FactoryBot
   config.include FactoryBot::Syntax::Methods
+
+  # JWT認証ヘルパー
+  config.include Module.new {
+    def auth_headers(user)
+      token = JsonWebToken.encode(user_id: user.id)
+      { 'Authorization' => "Bearer #{token}" }
+    end
+  }, type: :request
 end
 
 # Shoulda Matchers

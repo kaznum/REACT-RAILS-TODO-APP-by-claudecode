@@ -343,6 +343,7 @@ DEPENDENCIES
   debug
   factory_bot_rails
   faker
+  jwt
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection

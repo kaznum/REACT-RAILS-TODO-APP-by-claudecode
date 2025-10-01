@@ -58,10 +58,14 @@ Docker Composeで動作する。コンテナは以下の２つ。
 
 ## 仕様
 
-- ログイン・ユーザー管理: Google OAuth 2.0による認証
+- ログイン・ユーザー管理: Google OAuth 2.0による認証 + JWT
+  - 認証方式: JWTトークンベース（ステートレス認証）
+  - OAuth認証後にJWTトークンを発行し、フロントエンドのlocalStorageに保存
+  - API呼び出し時はAuthorizationヘッダーで`Bearer <token>`形式でトークンを送信
+  - トークン有効期限: 24時間
   - 未認証ユーザーは専用ログインページ(`/login`)にリダイレクト
   - 認証後はTODOリスト画面にリダイレクト
-  - ログアウトはTODOリスト画面から可能
+  - ログアウトはTODOリスト画面から可能（localStorageからトークンを削除）
 - トップページ(`/`)はログインページ
 - 認証後のメイン画面はTODOリスト(`/todos`)
 - ログインページ、TODO一覧、TODOの新規登録、TODOの編集の画面構成とする。
@@ -70,6 +74,7 @@ Docker Composeで動作する。コンテナは以下の２つ。
   - 一覧画面で削除が可能（削除前に確認ダイアログを表示する)
 - TODOの項目
   - TODO名, 期限(年月日)、完了フラグ
+  - TODOは期限の昇順で表示（期限なしは最初に表示）
 - バリデーション
   - TODO名: 必須入力、最大255文字
 - 表示、メッセージは日本語表示とする。
@@ -108,6 +113,40 @@ docker-compose up -d
 ```
 
 注意: `.env`ファイルは`.gitignore`に含まれているため、Gitにコミットされません。
+
+## JWT認証の実装詳細
+
+### バックエンド (Rails)
+
+- **JWT gem**: `jwt` gemを使用
+- **トークン生成**: `JsonWebToken`クラス (`api/app/lib/json_web_token.rb`)
+  - `encode(payload, exp)`: JWTトークンを生成（デフォルト有効期限24時間）
+  - `decode(token)`: JWTトークンを検証・デコード
+- **認証フロー**:
+  1. ユーザーがGoogle OAuthで認証
+  2. `SessionsController`でJWTトークンを生成
+  3. フロントエンドに`/login?token=<jwt>`形式でリダイレクト
+  4. フロントエンドがトークンをlocalStorageに保存
+- **API認証**: `ApplicationController`の`authorize_request`メソッドで全APIリクエストを検証
+  - Authorizationヘッダーから`Bearer <token>`を取得
+  - トークンをデコードして`@current_user`を設定
+- **セッション設定**: OmniAuth用に最小限のセッションを設定（`/auth`パスのみ）
+
+### フロントエンド (React)
+
+- **トークン管理**: `src/utils/auth.js`
+  - `setToken(token)`: localStorageにトークンを保存
+  - `getToken()`: localStorageからトークンを取得
+  - `removeToken()`: localStorageからトークンを削除
+  - `isAuthenticated()`: トークンの有効性を確認
+- **API クライアント**: `src/api/client.js`
+  - Axiosインスタンスでリクエストインターセプターを設定
+  - 自動的にAuthorizationヘッダーに`Bearer <token>`を追加
+  - 401エラー時は自動的にログインページにリダイレクト
+- **認証フロー**:
+  1. Loginコンポーネントでトークンをクエリパラメータから取得
+  2. localStorageに保存してTODO画面にリダイレクト
+  3. 以降のAPI呼び出しは自動的にトークンを含む
 
 ## コーディング規約
 
