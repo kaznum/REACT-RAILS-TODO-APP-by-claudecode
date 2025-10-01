@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::Auth', type: :request do
@@ -16,7 +18,7 @@ RSpec.describe 'Api::Auth', type: :request do
 
       it 'ユーザー情報を返す' do
         get '/api/auth/check'
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['user']['id']).to eq(user.id)
         expect(json['user']['name']).to eq(user.name)
         expect(json['user']['email']).to eq(user.email)
@@ -31,7 +33,7 @@ RSpec.describe 'Api::Auth', type: :request do
 
       it 'エラーメッセージを返す' do
         get '/api/auth/check'
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json['error']).to eq('Unauthorized')
       end
     end

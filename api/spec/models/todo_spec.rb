@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Todo, type: :model do
   describe 'associations' do
-    it { should belong_to(:user) }
+    it { is_expected.to belong_to(:user) }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_length_of(:name).is_at_most(255) }
-    it { should validate_inclusion_of(:completed).in_array([true, false]) }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to validate_inclusion_of(:completed).in_array([true, false]) }
   end
 
   describe 'scopes' do
@@ -18,23 +20,23 @@ RSpec.describe Todo, type: :model do
 
     describe '.completed' do
       it '完了したTODOのみを返す' do
-        expect(Todo.completed).to include(completed_todo)
-        expect(Todo.completed).not_to include(incomplete_todo)
+        expect(described_class.completed).to include(completed_todo)
+        expect(described_class.completed).not_to include(incomplete_todo)
       end
     end
 
     describe '.incomplete' do
       it '未完了のTODOのみを返す' do
-        expect(Todo.incomplete).to include(incomplete_todo)
-        expect(Todo.incomplete).not_to include(completed_todo)
+        expect(described_class.incomplete).to include(incomplete_todo)
+        expect(described_class.incomplete).not_to include(completed_todo)
       end
     end
   end
 
   describe 'default values' do
     it 'completedのデフォルト値はfalse' do
-      todo = Todo.new(name: 'Test', user: create(:user))
-      expect(todo.completed).to eq(false)
+      todo = described_class.new(name: 'Test', user: create(:user))
+      expect(todo.completed).to be(false)
     end
   end
 end

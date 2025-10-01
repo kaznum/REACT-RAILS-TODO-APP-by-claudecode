@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::Todos', type: :request do
@@ -15,13 +17,13 @@ RSpec.describe 'Api::Todos', type: :request do
       it 'ログインユーザーのTODOのみを返す' do
         get '/api/todos'
         expect(response).to have_http_status(:success)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.size).to eq(3)
       end
 
       it 'TODOを作成日時の降順で返す' do
         get '/api/todos'
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.first['id']).to be > json.last['id']
       end
     end
@@ -44,9 +46,9 @@ RSpec.describe 'Api::Todos', type: :request do
         let(:valid_params) { { todo: { name: 'New TODO', due_date: '2025-12-31', completed: false } } }
 
         it 'TODOを作成する' do
-          expect {
+          expect do
             post '/api/todos', params: valid_params
-          }.to change(user.todos, :count).by(1)
+          end.to change(user.todos, :count).by(1)
         end
 
         it '201ステータスを返す' do
@@ -56,7 +58,7 @@ RSpec.describe 'Api::Todos', type: :request do
 
         it '作成したTODOを返す' do
           post '/api/todos', params: valid_params
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           expect(json['name']).to eq('New TODO')
         end
       end
@@ -65,9 +67,9 @@ RSpec.describe 'Api::Todos', type: :request do
         let(:invalid_params) { { todo: { name: '', due_date: '2025-12-31' } } }
 
         it 'TODOを作成しない' do
-          expect {
+          expect do
             post '/api/todos', params: invalid_params
-          }.not_to change(Todo, :count)
+          end.not_to change(Todo, :count)
         end
 
         it '422ステータスを返す' do
@@ -77,7 +79,7 @@ RSpec.describe 'Api::Todos', type: :request do
 
         it 'エラーメッセージを返す' do
           post '/api/todos', params: invalid_params
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           expect(json['errors']).to be_present
         end
       end
@@ -132,9 +134,9 @@ RSpec.describe 'Api::Todos', type: :request do
       end
 
       it 'TODOを削除する' do
-        expect {
+        expect do
           delete "/api/todos/#{todo.id}"
-        }.to change(user.todos, :count).by(-1)
+        end.to change(user.todos, :count).by(-1)
       end
 
       it '204ステータスを返す' do

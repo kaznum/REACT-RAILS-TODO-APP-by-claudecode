@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   # OmniAuth routes
   get '/auth/:provider/callback', to: 'sessions#create'
@@ -11,5 +13,5 @@ Rails.application.routes.draw do
   end
 
   # Health check
-  get "up" => "rails/health#show", as: :rails_health_check
+  get 'up' => 'rails/health#show', as: :rails_health_check
 end
