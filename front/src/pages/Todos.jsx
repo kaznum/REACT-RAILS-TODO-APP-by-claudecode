@@ -50,8 +50,8 @@ function Todos() {
 
   const handleAddTodo = async (todo) => {
     try {
-      const response = await axios.post(`${API_URL}/todos`, { todo }, { withCredentials: true })
-      setTodos([...todos, response.data])
+      await axios.post(`${API_URL}/todos`, { todo }, { withCredentials: true })
+      await fetchTodos()
     } catch (error) {
       console.error('TODO追加エラー:', error)
       alert('TODOの追加に失敗しました')
@@ -60,8 +60,8 @@ function Todos() {
 
   const handleUpdateTodo = async (id, updates) => {
     try {
-      const response = await axios.put(`${API_URL}/todos/${id}`, { todo: updates }, { withCredentials: true })
-      setTodos(todos.map(t => t.id === id ? response.data : t))
+      await axios.put(`${API_URL}/todos/${id}`, { todo: updates }, { withCredentials: true })
+      await fetchTodos()
       setEditingTodo(null)
     } catch (error) {
       console.error('TODO更新エラー:', error)
