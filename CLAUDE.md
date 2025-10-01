@@ -16,14 +16,16 @@ Railsのアプリケーションプロジェクトで、TODOの追加、編集�
 - `docker compose exec api bundle install` - 依存関係のインストール
 - `docker compose exec api ./bin/rails server -b 0.0.0.0` - 開発サーバーの起動
 - `docker compose exec api ./bin/rails console` - Rails consoleの起動
-- `docker compose exec api ./bin/rubocop` - Rubocopによるコード検証
+- `docker compose exec api bundle exec rubocop` - Rubocopによるコード検証
+- `docker compose exec api bundle exec rubocop -A` - Rubocop自動修正
 - `docker compose exec api ./bin/rails db:migrate` - マイグレーションの実行
 - `docker compose exec api ./bin/rails db:reset` - データベースのリセット
-- `docker compose exec -e RAILS_ENV=test api ./bin/rails spec` - RSpecテストの実行
-- `docker compose exec front npm run server` - フロントエンド開発用サーバーの起動`
-- `docker compose exec front npm run build` - フロントエンドのbuild`
-- `docker compose exec front npm run server:dist` - フロントエンドのbuild済みコード用WEBサーバー`
-- `docker-compose exec front npm run test` - フロントエンドのテスト実行
+- `docker compose exec -e RAILS_ENV=test api bundle exec rspec` - RSpecテストの実行
+- `docker compose exec front npm run server` - フロントエンド開発用サーバーの起動
+- `docker compose exec front npm run build` - フロントエンドのbuild
+- `docker compose exec front npm run server:dist` - フロントエンドのbuild済みコード用WEBサーバー
+- `docker compose exec front npm run test` - フロントエンドのテスト実行
+- `docker compose exec front npm run lint` - ESLintによるコード検証
 
 ## Architecture
 
@@ -105,7 +107,13 @@ docker-compose up -d
 
 ## コーディング規約
 
-- rubocopでエラーにならないようにする。
+### バックエンド (Rails)
+- Rubocopでエラーにならないようにする
+- `.rubocop.yml`に設定されたルールに従う
+
+### フロントエンド (React)
+- ESLintでエラーにならないようにする
+- `.eslintrc.cjs`に設定されたルールに従う
 
 ## 自動テスト
 
