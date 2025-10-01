@@ -1,0 +1,116 @@
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.todo-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.todo-item.completed {
+  opacity: 0.6;
+}
+
+.todo-item.editing {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.todo-checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.todo-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.todo-name {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.todo-item.completed .todo-name {
+  text-decoration: line-through;
+}
+
+.todo-date {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.todo-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-button,
+.delete-button,
+.save-button,
+.cancel-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.edit-button {
+  background: #667eea;
+  color: white;
+}
+
+.delete-button {
+  background: #ff6b6b;
+  color: white;
+}
+
+.save-button {
+  background: #51cf66;
+  color: white;
+}
+
+.cancel-button {
+  background: #868e96;
+  color: white;
+}
+
+.edit-button:hover,
+.delete-button:hover,
+.save-button:hover,
+.cancel-button:hover {
+  transform: translateY(-2px);
+}
+
+.edit-input,
+.edit-date {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.edit-input:focus,
+.edit-date:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}

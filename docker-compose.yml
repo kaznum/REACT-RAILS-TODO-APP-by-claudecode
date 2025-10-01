@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: todo_api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/app
+    env_file:
+      - .env
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+    stdin_open: true
+    tty: true
+
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: todo_front
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./front:/app
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    command: sh -c "npm install && npm run server"
+    stdin_open: true
+    tty: true

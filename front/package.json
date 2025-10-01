@@ -1,0 +1,27 @@
+{
+  "name": "todo-front",
+  "version": "1.0.0",
+  "description": "TODO管理アプリ フロントエンド",
+  "scripts": {
+    "server": "vite --host 0.0.0.0 --port 8080",
+    "build": "vite build",
+    "server:dist": "vite preview --host 0.0.0.0 --port 8080",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.1",
+    "axios": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.5",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/jest-dom": "^6.4.8",
+    "jsdom": "^25.0.0"
+  }
+}
