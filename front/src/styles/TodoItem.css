@@ -34,11 +34,15 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .todo-name {
   font-size: 1.1rem;
   color: #333;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .todo-item.completed .todo-name {
@@ -101,6 +105,8 @@
   border-radius: 10px;
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .edit-input:focus,
