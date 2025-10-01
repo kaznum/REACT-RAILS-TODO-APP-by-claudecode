@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import '../styles/TodoForm.css'
+import '../styles/TodoForm.scss'
 
 function TodoForm({ onSubmit }) {
   const [name, setName] = useState('')

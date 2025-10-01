@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import '../styles/TodoItem.css'
+import '../styles/TodoItem.scss'
 
 function TodoItem({ todo, onToggle, onEdit, onDelete, isEditing, onUpdate, onCancelEdit }) {
   const [name, setName] = useState(todo.name)

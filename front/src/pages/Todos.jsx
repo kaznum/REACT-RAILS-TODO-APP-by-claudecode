@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import TodoItem from '../components/TodoItem'
 import TodoForm from '../components/TodoForm'
-import '../styles/Todos.css'
+import '../styles/Todos.scss'
 
 const API_URL = 'http://localhost:3000/api'
 
