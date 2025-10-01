@@ -6,7 +6,7 @@ module Api
     before_action :set_todo, only: %i[show update destroy]
 
     def index
-      @todos = current_user.todos.order(created_at: :desc)
+      @todos = current_user.todos.order(Arel.sql('CASE WHEN due_date IS NULL THEN 0 ELSE 1 END, due_date ASC'))
       render json: @todos
     end
 

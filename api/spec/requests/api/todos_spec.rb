@@ -10,21 +10,29 @@ RSpec.describe 'Api::Todos', type: :request do
     context '認証済みユーザーの場合' do
       before do
         allow_any_instance_of(Api::TodosController).to receive(:current_user).and_return(user)
-        create_list(:todo, 3, user: user)
-        create(:todo, user: other_user)
       end
 
       it 'ログインユーザーのTODOのみを返す' do
+        create_list(:todo, 3, user: user)
+        create(:todo, user: other_user)
+
         get '/api/todos'
         expect(response).to have_http_status(:success)
         json = response.parsed_body
         expect(json.size).to eq(3)
       end
 
-      it 'TODOを作成日時の降順で返す' do
+      it 'TODOを期限の昇順で返す（期限なしは最初）' do
+        # 期限なし、期限あり（古い）、期限あり（新しい）のTODOを作成
+        create(:todo, user: user, name: '期限なし', due_date: nil)
+        create(:todo, user: user, name: '期限早い', due_date: 1.day.from_now)
+        create(:todo, user: user, name: '期限遅い', due_date: 3.days.from_now)
+
         get '/api/todos'
         json = response.parsed_body
-        expect(json.first['id']).to be > json.last['id']
+
+        # 期限なしが最初、その後期限の昇順
+        expect(json.pluck('name')).to eq(%w[期限なし 期限早い 期限遅い])
       end
     end
 
