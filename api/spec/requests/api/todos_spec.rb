@@ -28,7 +28,7 @@ RSpec.describe 'Api::Todos', type: :request do
         json = response.parsed_body
 
         # 期限なしが最初、その後期限の昇順
-        expect(json.map { |t| t['name'] }).to eq(%w[期限なし 期限早い 期限遅い])
+        expect(json.pluck('name')).to eq(%w[期限なし 期限早い 期限遅い])
       end
     end
 
