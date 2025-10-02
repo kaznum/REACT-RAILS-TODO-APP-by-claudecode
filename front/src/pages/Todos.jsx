@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import apiClient from '../api/client'
 import { removeToken } from '../utils/auth'
 import TodoItem from '../components/TodoItem'
@@ -97,6 +97,7 @@ function Todos() {
           <div className="user-info">
             <span>{user.name}</span>
             <button onClick={handleLogout} className="logout-button">ログアウト</button>
+            <Link to="/manual" className="manual-link">📖 使い方</Link>
           </div>
         )}
       </div>
