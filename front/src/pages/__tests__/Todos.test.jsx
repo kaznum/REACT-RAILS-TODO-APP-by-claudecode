@@ -30,13 +30,22 @@ describe('Todos', () => {
       id: 1,
       name: 'TODO 1',
       due_date: '2025-12-31',
-      completed: false
+      completed: false,
+      priority: 2
     },
     {
       id: 2,
       name: 'TODO 2',
       due_date: null,
-      completed: true
+      completed: true,
+      priority: 1
+    },
+    {
+      id: 3,
+      name: 'TODO 3',
+      due_date: '2025-11-30',
+      completed: false,
+      priority: 0
     }
   ]
 
@@ -63,6 +72,7 @@ describe('Todos', () => {
       expect(screen.getByText('Test User')).toBeInTheDocument()
       expect(screen.getByText('TODO 1')).toBeInTheDocument()
       expect(screen.getByText('TODO 2')).toBeInTheDocument()
+      expect(screen.getByText('TODO 3')).toBeInTheDocument()
     })
 
     expect(apiClient.get).toHaveBeenCalledWith('/auth/check')
@@ -178,5 +188,114 @@ describe('Todos', () => {
     expect(apiClient.delete).not.toHaveBeenCalledWith('/todos/1')
 
     confirmSpy.mockRestore()
+  })
+
+  it('優先度フィルターで「高」を選択すると優先度が高のTODOのみ表示される', async () => {
+    render(
+      <BrowserRouter>
+        <Todos />
+      </BrowserRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+      expect(screen.getByText('TODO 2')).toBeInTheDocument()
+      expect(screen.getByText('TODO 3')).toBeInTheDocument()
+    })
+
+    const priorityFilter = screen.getByLabelText('優先度で絞り込み:')
+    fireEvent.change(priorityFilter, { target: { value: '2' } })
+
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+      expect(screen.queryByText('TODO 2')).not.toBeInTheDocument()
+      expect(screen.queryByText('TODO 3')).not.toBeInTheDocument()
+    })
+  })
+
+  it('優先度フィルターで「中」を選択すると優先度が中のTODOのみ表示される', async () => {
+    render(
+      <BrowserRouter>
+        <Todos />
+      </BrowserRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+    })
+
+    const priorityFilter = screen.getByLabelText('優先度で絞り込み:')
+    fireEvent.change(priorityFilter, { target: { value: '1' } })
+
+    await waitFor(() => {
+      expect(screen.queryByText('TODO 1')).not.toBeInTheDocument()
+      expect(screen.getByText('TODO 2')).toBeInTheDocument()
+      expect(screen.queryByText('TODO 3')).not.toBeInTheDocument()
+    })
+  })
+
+  it('優先度フィルターで「低」を選択すると優先度が低のTODOのみ表示される', async () => {
+    render(
+      <BrowserRouter>
+        <Todos />
+      </BrowserRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+    })
+
+    const priorityFilter = screen.getByLabelText('優先度で絞り込み:')
+    fireEvent.change(priorityFilter, { target: { value: '0' } })
+
+    await waitFor(() => {
+      expect(screen.queryByText('TODO 1')).not.toBeInTheDocument()
+      expect(screen.queryByText('TODO 2')).not.toBeInTheDocument()
+      expect(screen.getByText('TODO 3')).toBeInTheDocument()
+    })
+  })
+
+  it('優先度フィルターで「選択なし」を選択すると全てのTODOが表示される', async () => {
+    render(
+      <BrowserRouter>
+        <Todos />
+      </BrowserRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+    })
+
+    const priorityFilter = screen.getByLabelText('優先度で絞り込み:')
+
+    // まず「高」で絞り込み
+    fireEvent.change(priorityFilter, { target: { value: '2' } })
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+      expect(screen.queryByText('TODO 2')).not.toBeInTheDocument()
+    })
+
+    // 「選択なし」に変更して全件表示
+    fireEvent.change(priorityFilter, { target: { value: '' } })
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+      expect(screen.getByText('TODO 2')).toBeInTheDocument()
+      expect(screen.getByText('TODO 3')).toBeInTheDocument()
+    })
+  })
+
+  it('優先度フィルターの初期値は「選択なし」である', async () => {
+    render(
+      <BrowserRouter>
+        <Todos />
+      </BrowserRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('TODO 1')).toBeInTheDocument()
+    })
+
+    const priorityFilter = screen.getByLabelText('優先度で絞り込み:')
+    expect(priorityFilter.value).toBe('')
   })
 })

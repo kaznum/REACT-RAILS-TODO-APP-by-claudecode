@@ -12,6 +12,7 @@ function Todos() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [editingTodo, setEditingTodo] = useState(null)
+  const [priorityFilter, setPriorityFilter] = useState('')
 
   const checkAuth = useCallback(async () => {
     try {
@@ -85,6 +86,10 @@ function Todos() {
     handleUpdateTodo(todo.id, { completed: !todo.completed })
   }
 
+  const filteredTodos = priorityFilter === ''
+    ? todos
+    : todos.filter(todo => todo.priority === parseInt(priorityFilter))
+
   if (loading) {
     return <div className="loading">読み込み中...</div>
   }
@@ -104,11 +109,26 @@ function Todos() {
 
       <TodoForm onSubmit={handleAddTodo} />
 
+      <div className="filter-container">
+        <label htmlFor="priority-filter">優先度で絞り込み:</label>
+        <select
+          id="priority-filter"
+          value={priorityFilter}
+          onChange={(e) => setPriorityFilter(e.target.value)}
+          className="priority-filter"
+        >
+          <option value="">選択なし</option>
+          <option value="2">高</option>
+          <option value="1">中</option>
+          <option value="0">低</option>
+        </select>
+      </div>
+
       <div className="todos-list">
-        {todos.length === 0 ? (
+        {filteredTodos.length === 0 ? (
           <p className="no-todos">TODOがありません</p>
         ) : (
-          todos.map(todo => (
+          filteredTodos.map(todo => (
             <TodoItem
               key={todo.id}
               todo={todo}

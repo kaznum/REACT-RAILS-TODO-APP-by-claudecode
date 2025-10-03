@@ -87,3 +87,41 @@
   color: white;
   font-size: 1.5rem;
 }
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  label {
+    color: #666;
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .priority-filter {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+    min-width: 150px;
+
+    &:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    &:hover {
+      border-color: #667eea;
+    }
+  }
+}
