@@ -18,6 +18,19 @@
   opacity: 0.6;
 }
 
+// 優先度による色分け
+.todo-item.priority-high {
+  border-left: 5px solid #ff6b6b;
+}
+
+.todo-item.priority-medium {
+  border-left: 5px solid #ffd93d;
+}
+
+.todo-item.priority-low {
+  border-left: 5px solid #6bcf7f;
+}
+
 .todo-item.editing {
   flex-direction: column;
   align-items: stretch;
@@ -47,6 +60,35 @@
 
 .todo-item.completed .todo-name {
   text-decoration: line-through;
+}
+
+.todo-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.todo-priority {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  background: #f0f0f0;
+}
+
+.priority-high .todo-priority {
+  background: #ffe0e0;
+  color: #ff6b6b;
+}
+
+.priority-medium .todo-priority {
+  background: #fff8e0;
+  color: #f59f00;
+}
+
+.priority-low .todo-priority {
+  background: #e0f8e6;
+  color: #51cf66;
 }
 
 .todo-date {
@@ -99,7 +141,8 @@
 }
 
 .edit-input,
-.edit-date {
+.edit-date,
+.edit-priority {
   padding: 0.75rem 1rem;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
@@ -109,8 +152,14 @@
   overflow-wrap: break-word;
 }
 
+.edit-priority {
+  background: white;
+  cursor: pointer;
+}
+
 .edit-input:focus,
-.edit-date:focus {
+.edit-date:focus,
+.edit-priority:focus {
   outline: none;
   border-color: #667eea;
 }

@@ -4,6 +4,7 @@ import '../styles/TodoForm.scss'
 function TodoForm({ onSubmit }) {
   const [name, setName] = useState('')
   const [dueDate, setDueDate] = useState('')
+  const [priority, setPriority] = useState(1)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -14,10 +15,12 @@ function TodoForm({ onSubmit }) {
     onSubmit({
       name: name.trim(),
       due_date: dueDate || null,
-      completed: false
+      completed: false,
+      priority: parseInt(priority)
     })
     setName('')
     setDueDate('')
+    setPriority(1)
   }
 
   return (
@@ -37,6 +40,15 @@ function TodoForm({ onSubmit }) {
         onChange={(e) => setDueDate(e.target.value)}
         className="date-input"
       />
+      <select
+        value={priority}
+        onChange={(e) => setPriority(e.target.value)}
+        className="priority-select"
+      >
+        <option value={2}>高</option>
+        <option value={1}>中</option>
+        <option value={0}>低</option>
+      </select>
       <button type="submit" className="add-button">追加</button>
     </form>
   )

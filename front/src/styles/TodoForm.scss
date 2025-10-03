@@ -37,6 +37,22 @@
   border-color: #667eea;
 }
 
+.priority-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 80px;
+}
+
+.priority-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
 .add-button {
   padding: 0.75rem 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

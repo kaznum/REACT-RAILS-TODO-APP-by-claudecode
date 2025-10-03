@@ -6,7 +6,9 @@ module Api
     before_action :set_todo, only: %i[show update destroy]
 
     def index
-      @todos = current_user.todos.order(Arel.sql('CASE WHEN due_date IS NULL THEN 0 ELSE 1 END, due_date ASC'))
+      @todos = current_user.todos.order(
+        Arel.sql('priority DESC, CASE WHEN due_date IS NULL THEN 0 ELSE 1 END, due_date ASC')
+      )
       render json: @todos
     end
 
@@ -43,7 +45,7 @@ module Api
     end
 
     def todo_params
-      params.require(:todo).permit(:name, :due_date, :completed)
+      params.require(:todo).permit(:name, :due_date, :completed, :priority)
     end
   end
 end

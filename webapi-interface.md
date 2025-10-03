@@ -111,6 +111,7 @@ Cookie: セッション情報
     "name": "買い物に行く",
     "due_date": null,
     "completed": false,
+    "priority": 2,
     "user_id": 1,
     "created_at": "2025-10-01T12:00:00.000Z",
     "updated_at": "2025-10-01T12:00:00.000Z"
@@ -120,6 +121,7 @@ Cookie: セッション情報
     "name": "レポート提出",
     "due_date": "2025-10-15",
     "completed": false,
+    "priority": 1,
     "user_id": 1,
     "created_at": "2025-10-01T12:30:00.000Z",
     "updated_at": "2025-10-01T12:30:00.000Z"
@@ -128,8 +130,10 @@ Cookie: セッション情報
 ```
 
 **並び順**:
-- 期限（`due_date`）が`null`のTODOが最初
-- それ以外は期限の昇順
+- 優先度（`priority`）の降順（高→中→低）
+- 同じ優先度内では：
+  - 期限（`due_date`）が`null`のTODOが最初
+  - それ以外は期限の昇順
 
 未認証時 (401 Unauthorized):
 ```json
@@ -163,6 +167,7 @@ Cookie: セッション情報
   "name": "買い物に行く",
   "due_date": null,
   "completed": false,
+  "priority": 1,
   "user_id": 1,
   "created_at": "2025-10-01T12:00:00.000Z",
   "updated_at": "2025-10-01T12:00:00.000Z"
@@ -196,7 +201,8 @@ Cookie: セッション情報
   "todo": {
     "name": "新しいTODO",
     "due_date": "2025-12-31",
-    "completed": false
+    "completed": false,
+    "priority": 1
   }
 }
 ```
@@ -205,6 +211,7 @@ Cookie: セッション情報
 - `name` (string, required): TODO名（最大255文字）
 - `due_date` (date, optional): 期限（YYYY-MM-DD形式、nullも可）
 - `completed` (boolean, optional): 完了フラグ（デフォルト: false）
+- `priority` (integer, optional): 優先度（0=低, 1=中, 2=高、デフォルト: 1）
 
 **レスポンス**:
 
@@ -215,6 +222,7 @@ Cookie: セッション情報
   "name": "新しいTODO",
   "due_date": "2025-12-31",
   "completed": false,
+  "priority": 1,
   "user_id": 1,
   "created_at": "2025-10-01T13:00:00.000Z",
   "updated_at": "2025-10-01T13:00:00.000Z"
@@ -254,7 +262,8 @@ Cookie: セッション情報
   "todo": {
     "name": "更新されたTODO",
     "due_date": "2025-12-31",
-    "completed": true
+    "completed": true,
+    "priority": 2
   }
 }
 ```
@@ -263,6 +272,7 @@ Cookie: セッション情報
 - `name` (string, optional): TODO名
 - `due_date` (date, optional): 期限
 - `completed` (boolean, optional): 完了フラグ
+- `priority` (integer, optional): 優先度（0=低, 1=中, 2=高）
 
 **レスポンス**:
 
@@ -273,6 +283,7 @@ Cookie: セッション情報
   "name": "更新されたTODO",
   "due_date": "2025-12-31",
   "completed": true,
+  "priority": 2,
   "user_id": 1,
   "created_at": "2025-10-01T12:00:00.000Z",
   "updated_at": "2025-10-01T14:00:00.000Z"
@@ -344,6 +355,11 @@ Cookie: セッション情報
   - boolean型（true/false）
   - デフォルト: false
 
+- **priority**:
+  - integer型
+  - 0（低）、1（中）、2（高）のいずれか
+  - デフォルト: 1（中）
+
 ---
 
 ## エラーレスポンス
@@ -398,4 +414,5 @@ Cookie: セッション情報
 1. すべてのAPIエンドポイント（認証関連を除く）は認証が必要です
 2. 認証にはセッションクッキーを使用するため、リクエスト時に`withCredentials: true`を指定してください
 3. ユーザーは自分のTODOのみアクセス可能です（他ユーザーのTODOにはアクセスできません）
-4. TODO一覧は期限の昇順で返されます（期限なしのTODOが最初）
+4. TODO一覧は優先度の降順、期限の昇順で返されます（同じ優先度内では期限なしのTODOが最初）
+5. 優先度の値: 0=低、1=中、2=高

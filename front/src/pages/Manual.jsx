@@ -30,19 +30,31 @@ function Manual() {
           <ol>
             <li>ページ上部のフォームに「TODO名」を入力（必須・最大255文字）</li>
             <li>必要に応じて「期限」を設定（任意）</li>
+            <li>「優先度」を選択（高・中・低から選択、デフォルトは中）</li>
             <li>「追加」ボタンをクリック</li>
           </ol>
-          <p className="note">※ 期限を設定しない場合、TODOは一覧の最上部に表示されます。</p>
+          <p className="note">※ 優先度は高＞中＞低の順で表示されます。同じ優先度の場合、期限なしが最初に表示されます。</p>
         </section>
 
         <section className="manual-section">
           <h2>✏️ TODOの編集</h2>
           <ol>
             <li>編集したいTODOの「編集」ボタンをクリック</li>
-            <li>入力フォームが表示されるので、TODO名や期限を変更</li>
-            <li>「更新」ボタンをクリックして保存</li>
+            <li>入力フォームが表示されるので、TODO名、期限、優先度を変更</li>
+            <li>「保存」ボタンをクリックして保存</li>
             <li>編集をやめる場合は「キャンセル」ボタンをクリック</li>
           </ol>
+        </section>
+
+        <section className="manual-section">
+          <h2>🎯 優先度の設定</h2>
+          <p>各TODOには優先度を設定できます：</p>
+          <ul>
+            <li><strong>高</strong>: 緊急で重要なタスク（赤色で表示）</li>
+            <li><strong>中</strong>: 通常のタスク（黄色で表示、デフォルト）</li>
+            <li><strong>低</strong>: 余裕があるときに行うタスク（緑色で表示）</li>
+          </ul>
+          <p className="note">※ TODOは優先度が高い順に表示されます。色分けされた左ボーダーとバッジで視覚的に確認できます。</p>
         </section>
 
         <section className="manual-section">
@@ -66,10 +78,15 @@ function Manual() {
         <section className="manual-section">
           <h2>📋 TODOの表示順序</h2>
           <p>TODOは以下の順序で表示されます：</p>
-          <ul>
-            <li>期限なしのTODO（作成順）</li>
-            <li>期限ありのTODO（期限が早い順）</li>
-          </ul>
+          <ol>
+            <li>優先度の高い順（高→中→低）</li>
+            <li>同じ優先度内では：
+              <ul>
+                <li>期限なしのTODO（作成順）</li>
+                <li>期限ありのTODO（期限が早い順）</li>
+              </ul>
+            </li>
+          </ol>
         </section>
 
         <section className="manual-section">
@@ -86,6 +103,8 @@ function Manual() {
             <li>TODO名は必須項目です。入力しないと追加できません</li>
             <li>TODO名は最大255文字まで入力できます</li>
             <li>期限は任意項目です。設定しなくても問題ありません</li>
+            <li>優先度のデフォルトは「中」です</li>
+            <li>優先度は色分けされて表示されるので、一目で重要度がわかります</li>
             <li>完了したTODOもそのまま一覧に残ります</li>
             <li>不要になったTODOは削除ボタンで削除できます</li>
           </ul>
