@@ -36,9 +36,15 @@ function TodoItem({ todo, onToggle, onEdit, onDelete, isEditing, onUpdate, onCan
   const isOverdue = (dueDate, completed) => {
     if (!dueDate || completed) return false
     const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const due = new Date(dueDate)
-    return due < today
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    return dueDate < todayStr
+  }
+
+  const isToday = (dueDate, completed) => {
+    if (!dueDate || completed) return false
+    const today = new Date()
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    return dueDate === todayStr
   }
 
   if (isEditing) {
@@ -88,8 +94,14 @@ function TodoItem({ todo, onToggle, onEdit, onDelete, isEditing, onUpdate, onCan
         <div className="todo-meta">
           <span className="todo-priority">優先度: {getPriorityLabel(todo.priority)}</span>
           {todo.due_date && (
-            <span className={`todo-date ${isOverdue(todo.due_date, todo.completed) ? 'overdue' : ''}`}>
-              期限: {todo.due_date}
+            <span className={`todo-date ${
+              isOverdue(todo.due_date, todo.completed) ? 'overdue' :
+              isToday(todo.due_date, todo.completed) ? 'today' : ''
+            }`}>
+              {isToday(todo.due_date, todo.completed)
+                ? `本日締め切り (${todo.due_date})`
+                : `期限: ${todo.due_date}`
+              }
             </span>
           )}
         </div>

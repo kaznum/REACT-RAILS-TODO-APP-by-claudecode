@@ -87,7 +87,12 @@ function Manual() {
               </ul>
             </li>
           </ol>
-          <p className="note">※ 未完了で期限が過ぎたTODOは、期限が赤色の太字で表示されます。</p>
+          <p className="note">※ 期限の表示について：</p>
+          <ul>
+            <li>本日締め切り: オレンジ色の太字で「本日締め切り (日付)」と表示</li>
+            <li>期限切れ（未完了）: 赤色の太字で表示</li>
+            <li>完了済み: 通常の色で表示</li>
+          </ul>
         </section>
 
         <section className="manual-section">
