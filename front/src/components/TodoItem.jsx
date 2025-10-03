@@ -33,6 +33,14 @@ function TodoItem({ todo, onToggle, onEdit, onDelete, isEditing, onUpdate, onCan
     }
   }
 
+  const isOverdue = (dueDate, completed) => {
+    if (!dueDate || completed) return false
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const due = new Date(dueDate)
+    return due < today
+  }
+
   if (isEditing) {
     return (
       <form className="todo-item editing" onSubmit={handleSubmit}>
@@ -80,7 +88,9 @@ function TodoItem({ todo, onToggle, onEdit, onDelete, isEditing, onUpdate, onCan
         <div className="todo-meta">
           <span className="todo-priority">優先度: {getPriorityLabel(todo.priority)}</span>
           {todo.due_date && (
-            <span className="todo-date">期限: {todo.due_date}</span>
+            <span className={`todo-date ${isOverdue(todo.due_date, todo.completed) ? 'overdue' : ''}`}>
+              期限: {todo.due_date}
+            </span>
           )}
         </div>
       </div>

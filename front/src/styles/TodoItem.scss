@@ -94,6 +94,11 @@
 .todo-date {
   font-size: 0.9rem;
   color: #999;
+
+  &.overdue {
+    color: #ff6b6b;
+    font-weight: 600;
+  }
 }
 
 .todo-actions {
